@@ -2,30 +2,15 @@ from playwright.sync_api import Playwright, sync_playwright
 
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch()
-    context = browser.new_context()
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context(storage_state="auth.json")
 
     # Open new page
     page = context.new_page()
 
-    # Go to http://127.0.0.1:8000/admin/login/?next=/admin/
-    page.goto("http://127.0.0.1:8000/admin/login/?next=/admin/")
+    page.set_default_timeout(1000)
 
-    # Click input[name="username"]
-    page.locator("input[name=\"username\"]").click()
-
-    # Fill input[name="username"]
-    page.locator("input[name=\"username\"]").fill("ronny")
-
-    # Press Tab
-    page.locator("input[name=\"username\"]").press("Tab")
-
-    # Fill input[name="password"]
-    page.locator("input[name=\"password\"]").fill("ronny")
-
-    # Click #login-form div:has-text("Log in")
-    page.locator("#login-form div:has-text(\"Log in\")").click()
-    assert page.url == "http://127.0.0.1:8000/admin/"
+    page.goto("http://127.0.0.1:8000/admin")
 
     # Click text=Add >> nth=2
     page.locator("text=Add").nth(2).click()
